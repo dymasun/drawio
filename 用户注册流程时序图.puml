@@ -1,0 +1,33 @@
+@startuml
+actor "用户" as User #white
+participant "移动端" as Client #white
+participant "登录服务" as Auth #white
+participant "redis" as Redis #white
+participant "MySql" as DB #white
+participant "短信平台" as SMS #white
+activate User
+activate Client
+activate Auth
+activate Redis
+activate SMS
+activate DB
+User -> Client: 输入手机号码\n获取短信验证码
+Client -> Auth: 生成短信验证码
+Auth -> Redis: 存储短信验证码，\n过期时间5分钟
+Auth -> SMS: 发送短信验证码
+Auth -> Client: 返回MD5加密短信验证码
+Client -> User: 发送成功，60秒后重试
+User -> Client: 输入短信验证码
+Client -> Client: 对用户输入的短信\n验证码进行第一次校验
+Client -> Auth: 发送用户输入的短信验证码
+Auth -> DB: 创建用户记录
+Auth -> Client: 创建成功
+Client -> User: 进入信息初始化界面
+deactivate User
+deactivate Client
+deactivate Auth
+deactivate Redis
+deactivate SMS
+deactivate DB
+
+@enduml
