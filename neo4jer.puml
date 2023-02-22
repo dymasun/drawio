@@ -1,0 +1,45 @@
+@startuml
+
+/'实体表'/
+!define EntityTable(name,desc) class name as "desc" << (E,#FF3030) >>  #CORNSILK
+!define RelationTable(name,desc) class name as "desc" << (R,#D9F4EF) >>  #D9F4EF
+
+'hide circle
+hide methods
+hide stereotypes
+
+skinparam class {
+    BackgroundColor white
+    ArrowColor red
+    BorderColor MidnightBlue
+}
+
+EntityTable(User, "客户端用户"){
+    userId Long
+}
+
+RelationTable(FriendRel, "好友关系") {
+    start User
+    end User
+}
+
+FriendRel - User: start
+FriendRel --o{ User: end
+
+EntityTable(Blog, "用户动态"){
+    blogId Long
+    addTime Long
+    access Integer
+}
+
+RelationTable(BlogPublishRel, "动态发布关系") {
+    start User
+    end Blog
+}
+
+User -- BlogPublishRel: start
+BlogPublishRel -o{ Blog: end
+
+
+
+@enduml

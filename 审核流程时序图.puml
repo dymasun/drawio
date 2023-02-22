@@ -1,0 +1,34 @@
+@startuml
+
+participant 业务服务 as biz #white
+participant RabbitMq as mq #white
+participant 审核模块 as exa #white
+participant 第三方审核 as tpe #white
+participant Redis as rds #white
+
+activate biz
+activate exa
+activate mq
+activate rds
+activate tpe
+biz -> mq: 一次性发送\n业务id\n回调队列\n文本\n图片地址\n视频地址
+mq -> exa: 消息内容
+exa -> rds: 暂存内容
+exa -> tpe: 同步文本审核
+tpe -> exa: 同步返回文本审核结果
+exa -> tpe: 异步图片审核
+exa -> tpe: 异步视频审核
+tpe -> exa: 异步返回图片审核结果
+tpe -> exa: 异步返回视频审核结果
+exa -> rds: 校验是否全部审核完成
+exa -> exa: 若审核中任何一个素材\n不通过，则群体不通过
+exa -> mq: 根据回调队列，\n发送业务id和最终结果
+mq -> biz: 返回审核结果
+
+deactivate tpe
+deactivate rds
+deactivate mq
+deactivate exa
+deactivate biz
+
+@enduml

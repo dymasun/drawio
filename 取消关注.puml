@@ -1,0 +1,29 @@
+@startuml
+
+actor 当前用户 as userA #white
+participant 当前用户移动端 as clientA #white
+participant 用户服务 as biz #white
+participant MySql as db #white
+participant Neo4j as gb #white
+
+activate userA
+activate clientA
+activate biz
+activate db
+activate gb
+
+userA -> clientA: 点击取消关注按钮
+clientA -> biz: 发起取消关注请求
+biz -> gb: 检查是否存在好友关系
+biz -> db: 自己关注数-1，对方粉丝数-1\n对方关注自己则双方好友数-1
+biz -> gb: 删除关注关系
+biz -> clientA: 取消关注成功
+clientA -> userA: 关注列表刷新
+
+deactivate gb
+deactivate db
+deactivate biz
+deactivate clientA
+deactivate userA
+
+@enduml

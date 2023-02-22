@@ -1,0 +1,47 @@
+@startuml
+
+actor 用户 as userA #white
+participant 用户移动端 as clientA #white
+participant 聊天服务 as biz #white
+participant MySql as db #white
+participant 好友移动端 as clientB #white
+actor 好友 as userB #white
+
+activate userA
+activate clientA
+activate biz
+
+userA -> clientA: 完成登录
+clientA -> biz: 建立TCP连接
+activate db
+biz -> db: 是否存在历史数据
+db -> biz
+deactivate db
+biz -> clientA: 返回历史未读消息
+clientA -> userA: 显示未读消息
+...
+biz -> clientA: 推送消息
+...
+clientA -> biz: 心跳包
+...
+userA -> clientA: 选择好友发送消息
+clientA -> biz: 发送消息
+biz -> biz: 对方是否在线
+activate db
+biz -> db: 不在线则存入数据库
+deactivate db
+activate clientB
+activate userB
+biz -> clientB: 存在则推送消息
+clientB -> userB: 提示新消息
+deactivate clientB
+deactivate userB
+...
+userA -> clientA: 退出应用
+clientA -> biz: 销毁连接
+
+deactivate biz
+deactivate clientA
+deactivate userA
+
+@enduml

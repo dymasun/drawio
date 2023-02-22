@@ -1,0 +1,21 @@
+@startuml
+actor "用户" as User #white
+participant "移动端" as Client #white
+participant "登录服务" as Auth #white
+participant "MySql" as DB #white
+activate User
+activate Client
+activate Auth
+activate DB
+User -> Client: 输入手机号码和密码
+Client -> Auth: 发送请求
+Auth -> Auth: 验证密码
+Auth -> DB: 记录刷新令牌
+Auth -> Client: 返回用户信息\n访问令牌和刷新令牌
+Client -> User: 进入主页
+deactivate User
+deactivate Client
+deactivate Auth
+deactivate DB
+
+@enduml

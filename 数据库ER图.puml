@@ -1,0 +1,47 @@
+@startuml
+' hide the spot
+'hide circle
+' avoid problems with angled crows feet
+'skinparam linetype ortho
+
+entity client_user {
+*e1_id : number <<generated>>
+--
+*name : text
+description : text
+}
+
+entity blog {
+*e2_id : number <<generated>>
+--
+*e1_id : number <<FK>>
+other_details : text
+}
+
+entity blog_praise {
+*e2_id : number <<generated>>
+--
+*e1_id : number <<FK>>
+other_details : text
+}
+entity comment {
+*e2_id : number <<generated>>
+--
+*e1_id : number <<FK>>
+other_details : text
+}
+entity unread_message {
+*e2_id : number <<generated>>
+--
+*e1_id : number <<FK>>
+other_details : text
+}
+
+client_user -o{ blog
+client_user -o{ blog_praise
+client_user -> comment
+client_user -> unread_message
+blog -> blog_praise
+blog -> comment
+
+@enduml

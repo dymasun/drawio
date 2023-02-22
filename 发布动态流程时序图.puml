@@ -1,0 +1,39 @@
+@startuml
+
+actor 用户 as user #white
+participant 移动端 as client #white
+participant 动态服务 as biz #white
+participant 审核模块 as exa #white
+participant MySql as db #white
+participant Neo4j as gb #white
+participant 消息服务 as msg #white
+
+activate user
+activate client
+activate biz
+activate exa
+activate db
+activate gb
+activate msg
+user -> client: 输入动态内容
+client -> biz: 发送请求
+biz -> db: 存储未审核动态
+biz -> exa: 发送动态中文本、图片、视频
+biz -> client: 发布成功
+client -> user: 显示已发布的动态
+exa -> biz: 通知最终结果
+biz -> db: 解锁动态或删除动态
+biz -> gb: 若通过，创建用户与动态的关系
+biz -> msg: 若不通过，发送提示消息
+msg -> client: 推送提示消息
+client -> user: 提示警告
+
+deactivate msg
+deactivate gb
+deactivate db
+deactivate exa
+deactivate biz
+deactivate client
+deactivate user
+
+@enduml
